@@ -4,7 +4,7 @@ import { Tender } from './tender.entity';
 export enum SubmissionStatus {
   PENDING = 'pending',
   REVIEWING = 'reviewing',
-  SELECTED = 'selected',
+  ACCEPTED = 'accepted',
   REJECTED = 'rejected'
 }
 
@@ -36,6 +36,9 @@ export class TenderSubmission {
 
   @Column({ nullable: true })
   adminDocUrl!: string;
+
+  @Column({ nullable: true, type: 'text' })
+  reviewNotes!: string;
 
   @Column({
     type: 'enum',

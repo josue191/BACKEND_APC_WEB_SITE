@@ -56,4 +56,66 @@ export class SubmissionController {
       next(error);
     }
   };
+
+  findOne = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id } = req.params;
+      const result = await this.repository.findOne({
+        where: { id },
+        relations: ['tender']
+      });
+      
+      if (!result) {
+        return ResponseUtil.notFound(res, 'Soumission non trouvée');
+      }
+      
+      return ResponseUtil.success(res, 'Soumission récupérée', result);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  updateStatus = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id } = req.params;
+      const { status, reviewNotes } = req.body;
+      
+      const submission = await this.repository.findOne({
+        where: { id },
+        relations: ['tender']
+      });
+      
+      if (!submission) {
+        return ResponseUtil.notFound(res, 'Soumission non trouvée');
+      }
+      
+      submission.status = status;
+      if (reviewNotes !== undefined) {
+        submission.reviewNotes = reviewNotes;
+      }
+      
+      const result = await this.repository.save(submission);
+      
+      return ResponseUtil.success(res, 'Statut mis à jour', result);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  remove = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id } = req.params;
+      const submission = await this.repository.findOne({ where: { id } });
+      
+      if (!submission) {
+        return ResponseUtil.notFound(res, 'Soumission non trouvée');
+      }
+      
+      await this.repository.remove(submission);
+      
+      return ResponseUtil.success(res, 'Soumission supprimée', { id });
+    } catch (error) {
+      next(error);
+    }
+  };
 }

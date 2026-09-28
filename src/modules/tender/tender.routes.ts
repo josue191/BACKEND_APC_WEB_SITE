@@ -86,6 +86,14 @@ router.get('/:id', controller.findOne);
 router.use(authMiddleware);
 
 // Lecture : accessible aux deux rôles
+router.get('/submissions', authorize(UserRole.ADMIN, UserRole.ADMIN_RH), submissionController.findAll);
+router.get('/submissions/:id', authorize(UserRole.ADMIN, UserRole.ADMIN_RH), submissionController.findOne);
+
+// Écriture : ADMIN_RH seulement
+router.patch('/submissions/:id', authorize(UserRole.ADMIN_RH), submissionController.updateStatus);
+router.delete('/submissions/:id', authorize(UserRole.ADMIN_RH), submissionController.remove);
+
+// Ancienne route pour compatibilité
 router.get('/submissions/all', authorize(UserRole.ADMIN, UserRole.ADMIN_RH), submissionController.findAll);
 
 // Écriture : ADMIN_RH seulement
