@@ -35,9 +35,9 @@ export class SubmissionController {
         phone,
         address,
         tenderId,
-        technicalOfferUrl: files?.['offreTechnique']?.[0]?.path + '?fl_attachment=true',
-        financialOfferUrl: files?.['offreFinanciere']?.[0]?.path + '?fl_attachment=true',
-        adminDocUrl: files?.['documentAdministratif']?.[0]?.path + '?fl_attachment=true',
+        technicalOfferUrl: files?.['offreTechnique']?.[0]?.path,
+        financialOfferUrl: files?.['offreFinanciere']?.[0]?.path,
+        adminDocUrl: files?.['documentAdministratif']?.[0]?.path,
         status: 'pending' as any, // Statut par défaut
       });
 
