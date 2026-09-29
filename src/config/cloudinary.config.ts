@@ -39,6 +39,8 @@ if (isCloudinaryConfigured) {
     cloudinary: cloudinary,
     params: async (req, file) => {
       const isImage = file.mimetype.startsWith('image/');
+      const isPdf = file.mimetype === 'application/pdf' || file.originalname.toLowerCase().endsWith('.pdf');
+      
       if (isImage) {
         return {
           folder: 'apc-website',
@@ -46,10 +48,18 @@ if (isCloudinaryConfigured) {
           format: file.originalname.split('.').pop(),
           allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
         };
-      } else {
+      } else if (isPdf) {
         return {
           folder: 'apc-website',
           resource_type: 'raw',
+          format: 'pdf',
+          public_id: file.originalname.replace(/\.[^/.]+$/, ''), // Remove extension
+        };
+      } else {
+        return {
+          folder: 'apc-website',
+          resource_type: 'auto', // Auto-detect resource type
+          public_id: file.originalname.replace(/\.[^/.]+$/, ''),
         };
       }
     },
