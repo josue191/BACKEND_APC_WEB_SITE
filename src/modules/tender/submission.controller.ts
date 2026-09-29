@@ -61,7 +61,7 @@ export class SubmissionController {
     try {
       const { id } = req.params;
       const result = await this.repository.findOne({
-        where: { id },
+        where: { id: id as string },
         relations: ['tender']
       });
       
@@ -81,7 +81,7 @@ export class SubmissionController {
       const { status, reviewNotes } = req.body;
       
       const submission = await this.repository.findOne({
-        where: { id },
+        where: { id: id as string },
         relations: ['tender']
       });
       
@@ -105,7 +105,7 @@ export class SubmissionController {
   remove = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      const submission = await this.repository.findOne({ where: { id } });
+      const submission = await this.repository.findOne({ where: { id: id as string } });
       
       if (!submission) {
         return ResponseUtil.notFound(res, 'Soumission non trouvée');
