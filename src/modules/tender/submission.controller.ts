@@ -38,6 +38,7 @@ export class SubmissionController {
         technicalOfferUrl: files?.['offreTechnique']?.[0]?.path,
         financialOfferUrl: files?.['offreFinanciere']?.[0]?.path,
         adminDocUrl: files?.['documentAdministratif']?.[0]?.path,
+        status: 'pending' as any, // Statut par défaut
       });
 
       console.log('Submission créée:', submission);

@@ -37,8 +37,9 @@ export class TenderSubmission {
   @Column({ nullable: true })
   adminDocUrl!: string;
 
-  @Column({ nullable: true, type: 'text' })
-  reviewNotes!: string;
+  // reviewNotes optionnel pour éviter les erreurs si la colonne n'existe pas encore
+  // @Column({ nullable: true, type: 'text', default: null })
+  // reviewNotes?: string;
 
   @Column({
     type: 'enum',
