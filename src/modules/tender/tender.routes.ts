@@ -33,6 +33,10 @@ const submissionController = new SubmissionController();
  */
 router.get('/', controller.findAll);
 
+// Routes pour slug (public - pour accéder aux appels d'offres par slug)
+// Must come before /:id to avoid conflict
+router.get('/slug/:slug', controller.findBySlug);
+
 /**
  * @swagger
  * /api/v1/tenders/submit:
@@ -84,6 +88,11 @@ router.get('/:id', controller.findOne);
 
 // Routes administratives (Protégées)
 router.use(authMiddleware);
+
+// Image upload et slug generation (ADMIN_RH only)
+// These use PUT/POST with specific IDs, not conflicting with GET /:id
+router.put('/:id/image', authorize(UserRole.ADMIN_RH), upload.single('image'), controller.uploadImage);
+router.put('/:id/slug', authorize(UserRole.ADMIN_RH), controller.generateSlug);
 
 // Lecture : accessible aux deux rôles
 router.get('/submissions', authorize(UserRole.ADMIN, UserRole.ADMIN_RH), submissionController.findAll);

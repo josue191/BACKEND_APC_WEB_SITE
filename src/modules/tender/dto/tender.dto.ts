@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsEnum, IsOptional, IsDateString, IsUUID, IsArray } from 'class-validator';
+import { IsString, IsNotEmpty, IsEnum, IsOptional, IsDateString, IsUUID, IsArray, IsBoolean } from 'class-validator';
 import { TenderStatus } from '@/entities/tender.entity';
 
 export class CreateTenderDto {
@@ -33,6 +33,26 @@ export class CreateTenderDto {
   @IsString()
   @IsOptional()
   organization?: string;
+
+  @IsString()
+  @IsOptional()
+  imageUrl?: string;
+
+  @IsString()
+  @IsOptional()
+  slug?: string;
+
+  @IsString()
+  @IsOptional()
+  metaDescription?: string;
+
+  @IsString()
+  @IsOptional()
+  metaKeywords?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  isFeatured?: boolean;
 }
 
 export class UpdateTenderDto extends CreateTenderDto {}

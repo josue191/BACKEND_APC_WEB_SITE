@@ -75,6 +75,21 @@ export class Tender {
   @Column({ nullable: true })
   organization!: string; // Si différent de APC
 
+  @Column({ nullable: true })
+  imageUrl!: string; // URL de l'image d'illustration (Cloudinary)
+
+  @Column({ nullable: true })
+  slug!: string; // Slug pour l'URL unique (ex: fourniture-materiel-bureau-2024)
+
+  @Column({ nullable: true, type: 'text' })
+  metaDescription!: string; // Description pour Open Graph (150-160 caractères)
+
+  @Column({ nullable: true })
+  metaKeywords!: string; // Mots-clés SEO
+
+  @Column({ default: false })
+  isFeatured!: boolean; // Mettre en avant sur la page d'accueil
+
   @CreateDateColumn()
   createdAt!: Date;
 

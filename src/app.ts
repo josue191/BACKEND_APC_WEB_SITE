@@ -25,6 +25,7 @@ import messageSubjectRoutes from '@/modules/contact/message-subject.routes';
 import settingsRoutes from '@/modules/settings/settings.routes';
 import testimonialRoutes from '@/modules/testimonial/testimonial.routes';
 import dashboardRoutes from '@/modules/dashboard/dashboard.routes';
+import supplierRoutes from '@/modules/supplier/supplier.routes';
 import { ResponseUtil } from '@/common/utils/response.util';
 
 import swaggerUi from 'swagger-ui-express';
@@ -97,6 +98,7 @@ app.use('/api/v1/message-subjects', messageSubjectRoutes);
 app.use('/api/v1/settings', settingsRoutes);
 app.use('/api/v1/testimonials', testimonialRoutes);
 app.use('/api/v1/stats/dashboard', dashboardRoutes);
+app.use('/api/v1/suppliers', supplierRoutes);
 
 // 7. Gestionnaire d'erreurs (DOIT être le dernier)
 app.use(errorMiddleware);

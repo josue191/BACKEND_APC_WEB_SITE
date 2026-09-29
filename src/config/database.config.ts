@@ -19,6 +19,7 @@ import { TenderSubmission } from '../entities/tender-submission.entity';
 import { BeneficiaryTestimonial } from '../entities/testimonial.entity';
 import { MessageSubject } from '../entities/message-subject.entity';
 import { Department } from '../entities/department.entity';
+import { Supplier } from '../entities/supplier.entity';
 
 dotenv.config();
 
@@ -31,7 +32,7 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME || 'apc_db',
   synchronize: false, // NEVER use auto-sync in production — use migrations instead
   logging: process.env.NODE_ENV === 'development',
-  entities: [User, Message, MessageSubject, Department, News, NewsCategory, Project, ProjectCategory, Service, Partner, PartnerCategory, TeamMember, Tender, Career, CareerType, Settings, Application, TenderSubmission, BeneficiaryTestimonial],
+  entities: [User, Message, MessageSubject, Department, News, NewsCategory, Project, ProjectCategory, Service, Partner, PartnerCategory, TeamMember, Tender, Career, CareerType, Settings, Application, TenderSubmission, BeneficiaryTestimonial, Supplier],
   migrations: [],
   subscribers: [],
 });

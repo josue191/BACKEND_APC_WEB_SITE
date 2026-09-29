@@ -111,4 +111,54 @@ export class TenderService {
     await this.repository.update({ id: In(ids) }, { status });
     return true;
   }
+
+  generateSlug(title: string, reference: string): string {
+    const baseSlug = title
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '') // Remove accents
+      .replace(/[^a-z0-9]+/g, '-') // Replace non-alphanumeric with hyphens
+      .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+    
+    // Append reference for uniqueness
+    return `${baseSlug}-${reference.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
+  }
+
+  async ensureUniqueSlug(tender: Tender): Promise<string> {
+    let slug = tender.slug || this.generateSlug(tender.title, tender.reference);
+    let counter = 1;
+    
+    while (await this.repository.findOneBy({ slug })) {
+      slug = `${slug}-${counter}`;
+      counter++;
+    }
+    
+    return slug;
+  }
+
+  async uploadImage(id: string, file: Express.Multer.File) {
+    const tender = await this.findOne(id);
+    tender.imageUrl = (file as any).path; // Cloudinary URL
+    return await this.repository.save(tender);
+  }
+
+  async generateSlugForTender(id: string, customSlug?: string) {
+    const tender = await this.findOne(id);
+    
+    if (customSlug) {
+      tender.slug = customSlug;
+    } else {
+      tender.slug = await this.ensureUniqueSlug(tender);
+    }
+    
+    return await this.repository.save(tender);
+  }
+
+  async findBySlug(slug: string) {
+    const tender = await this.repository.findOneBy({ slug });
+    if (!tender) {
+      throw new NotFoundError('Appel d\'offres introuvable');
+    }
+    return tender;
+  }
 }

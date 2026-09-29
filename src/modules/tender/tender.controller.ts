@@ -90,4 +90,35 @@ export class TenderController {
       next(error);
     }
   };
+
+  uploadImage = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      if (!req.file) {
+        return ResponseUtil.badRequest(res, 'Aucun fichier fourni');
+      }
+      const result = await this.service.uploadImage(req.params.id as string, req.file);
+      return ResponseUtil.success(res, 'Image téléchargée avec succès', { url: result.imageUrl });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  generateSlug = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { slug } = req.body;
+      const result = await this.service.generateSlugForTender(req.params.id as string, slug);
+      return ResponseUtil.success(res, 'Slug généré avec succès', { slug: result.slug });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  findBySlug = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const result = await this.service.findBySlug(req.params.slug as string);
+      return ResponseUtil.success(res, 'Détails de l\'appel d\'offres récupérés', result);
+    } catch (error) {
+      next(error);
+    }
+  };
 }
