@@ -37,6 +37,12 @@ router.get('/', controller.findAll);
 // Must come before /:id to avoid conflict
 router.get('/slug/:slug', controller.findBySlug);
 
+// Routes pour les soumissions (doivent venir avant /:id pour éviter le conflit)
+router.get('/submissions', authMiddleware, authorize(UserRole.ADMIN, UserRole.ADMIN_RH), submissionController.findAll);
+router.get('/submissions/:id', authMiddleware, authorize(UserRole.ADMIN, UserRole.ADMIN_RH), submissionController.findOne);
+router.patch('/submissions/:id', authMiddleware, authorize(UserRole.ADMIN_RH), submissionController.updateStatus);
+router.delete('/submissions/:id', authMiddleware, authorize(UserRole.ADMIN_RH), submissionController.remove);
+
 /**
  * @swagger
  * /api/v1/tenders/submit:
@@ -93,17 +99,6 @@ router.use(authMiddleware);
 // These use PUT/POST with specific IDs, not conflicting with GET /:id
 router.put('/:id/image', authorize(UserRole.ADMIN_RH), upload.single('image'), controller.uploadImage);
 router.put('/:id/slug', authorize(UserRole.ADMIN_RH), controller.generateSlug);
-
-// Lecture : accessible aux deux rôles
-router.get('/submissions', authorize(UserRole.ADMIN, UserRole.ADMIN_RH), submissionController.findAll);
-router.get('/submissions/:id', authorize(UserRole.ADMIN, UserRole.ADMIN_RH), submissionController.findOne);
-
-// Écriture : ADMIN_RH seulement
-router.patch('/submissions/:id', authorize(UserRole.ADMIN_RH), submissionController.updateStatus);
-router.delete('/submissions/:id', authorize(UserRole.ADMIN_RH), submissionController.remove);
-
-// Ancienne route pour compatibilité
-router.get('/submissions/all', authorize(UserRole.ADMIN, UserRole.ADMIN_RH), submissionController.findAll);
 
 // Écriture : ADMIN_RH seulement
 /**
