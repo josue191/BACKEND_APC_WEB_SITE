@@ -11,8 +11,22 @@ export class SubmissionController {
 
   submit = async (req: Request, res: Response, next: NextFunction) => {
     try {
+      console.log('=== Soumission appel d\'offres ===');
+      console.log('Body:', req.body);
+      console.log('Files:', req.files);
+
       const { companyName, contactName, email, phone, address, tenderId } = req.body;
       const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+
+      // Validation des champs requis
+      if (!companyName || !contactName || !email || !tenderId) {
+        return ResponseUtil.badRequest(res, 'Champs requis manquants');
+      }
+
+      // Validation des fichiers requis
+      if (!files?.['offreTechnique'] || !files?.['offreFinanciere']) {
+        return ResponseUtil.badRequest(res, 'Les fichiers technique et financier sont requis');
+      }
 
       const submission = this.repository.create({
         companyName,
@@ -26,21 +40,31 @@ export class SubmissionController {
         adminDocUrl: files?.['documentAdministratif']?.[0]?.path,
       });
 
+      console.log('Submission créée:', submission);
+
       const result = await this.repository.save(submission);
+      console.log('Submission sauvegardée:', result);
 
       // Fire-and-forget email notification
-      const tender = await this.tenderRepository.findOneBy({ id: tenderId });
-      emailService.notifyNewTenderSubmission({
-        companyName,
-        contactName,
-        email,
-        phone,
-        tenderTitle: tender?.title,
-        tenderRef: tender?.reference,
-      });
+      try {
+        const tender = await this.tenderRepository.findOneBy({ id: tenderId });
+        if (tender) {
+          emailService.notifyNewTenderSubmission({
+            companyName,
+            contactName,
+            email,
+            phone,
+            tenderTitle: tender?.title,
+            tenderRef: tender?.reference,
+          });
+        }
+      } catch (emailError) {
+        console.error('Erreur notification email (non bloquante):', emailError);
+      }
 
       return ResponseUtil.created(res, 'Offre soumise avec succès', result);
     } catch (error) {
+      console.error('Erreur soumission appel d\'offres:', error);
       next(error);
     }
   };
