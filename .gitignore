@@ -73,6 +73,9 @@ typings/
 .env.test
 .env*.local
 
+# Uploads directory (local file storage)
+uploads/
+
 # parcel-bundler cache
 .cache
 
