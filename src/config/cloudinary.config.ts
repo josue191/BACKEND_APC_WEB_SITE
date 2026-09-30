@@ -19,6 +19,7 @@ if (isCloudinaryConfigured) {
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
+    secure: true,
   });
   console.log('Cloudinary configuré avec succès');
 } else {
@@ -48,20 +49,11 @@ if (isCloudinaryConfigured) {
           format: file.originalname.split('.').pop(),
           allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
         };
-      } else if (isPdf) {
-        return {
-          folder: 'apc-website',
-          resource_type: 'raw',
-          format: 'pdf',
-          public_id: file.originalname.replace(/\.[^/.]+$/, ''), // Remove extension
-          type: 'upload', // Force public access
-          access_mode: 'public', // Ensure public access
-        };
       } else {
         return {
           folder: 'apc-website',
           resource_type: 'auto', // Auto-detect resource type
-          public_id: file.originalname.replace(/\.[^/.]+$/, ''),
+          public_id: `${Date.now()}-${file.originalname.replace(/\.[^/.]+$/, '')}`,
         };
       }
     },
