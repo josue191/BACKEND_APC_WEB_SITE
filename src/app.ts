@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
+import path from 'path';
 import { errorMiddleware } from '@/middleware/error/error.middleware';
 import authRoutes from '@/modules/auth/auth.routes';
 import projectRoutes from '@/modules/project/project.routes';
@@ -60,6 +61,11 @@ app.use(cors({
 // 3. Body Parser
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// 3.5. Static files for uploads (soumissions)
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads'), {
+  maxAge: '1y' // Cache files for 1 year
+}));
 
 // 4. Rate Limiting (Limiteur global)
 const globalLimiter = rateLimit({

@@ -4,6 +4,7 @@ import { TenderSubmission } from '@/entities/tender-submission.entity';
 import { Tender } from '@/entities/tender.entity';
 import { ResponseUtil } from '@/common/utils/response.util';
 import { emailService } from '@/common/services/email.service';
+import path from 'path';
 
 export class SubmissionController {
   private repository = AppDataSource.getRepository(TenderSubmission);
@@ -28,6 +29,18 @@ export class SubmissionController {
         return ResponseUtil.badRequest(res, 'Les fichiers technique et financier sont requis');
       }
 
+      // Générer les URLs pour les fichiers locaux
+      const baseUrl = process.env.BASE_URL || 'https://api.agri-peaceandchild.org';
+      const technicalOfferUrl = files?.['offreTechnique']?.[0]?.filename
+        ? `${baseUrl}/uploads/submissions/${files['offreTechnique'][0].filename}`
+        : null;
+      const financialOfferUrl = files?.['offreFinanciere']?.[0]?.filename
+        ? `${baseUrl}/uploads/submissions/${files['offreFinanciere'][0].filename}`
+        : null;
+      const adminDocUrl = files?.['documentAdministratif']?.[0]?.filename
+        ? `${baseUrl}/uploads/submissions/${files['documentAdministratif'][0].filename}`
+        : null;
+
       const submission = this.repository.create({
         companyName,
         contactName,
@@ -35,9 +48,9 @@ export class SubmissionController {
         phone,
         address,
         tenderId,
-        technicalOfferUrl: files?.['offreTechnique']?.[0]?.path,
-        financialOfferUrl: files?.['offreFinanciere']?.[0]?.path,
-        adminDocUrl: files?.['documentAdministratif']?.[0]?.path,
+        technicalOfferUrl,
+        financialOfferUrl,
+        adminDocUrl,
         status: 'pending' as any, // Statut par défaut
       });
 

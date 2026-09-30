@@ -6,7 +6,7 @@ import { authorize } from '@/middleware/auth/roles.middleware';
 import { validationMiddleware } from '@/middleware/validation/validation.middleware';
 import { UserRole } from '@/common/enums/role.enum';
 import { CreateTenderDto, UpdateTenderDto } from './dto/tender.dto';
-import { upload } from '@/config/cloudinary.config';
+import { upload, submissionUpload } from '@/config/cloudinary.config';
 
 const router = Router();
 const controller = new TenderController();
@@ -68,7 +68,7 @@ router.delete('/submissions/:id', authMiddleware, authorize(UserRole.ADMIN_RH), 
  *       201:
  *         description: Offre soumise avec succès
  */
-router.post('/submit', upload.fields([
+router.post('/submit', submissionUpload.fields([
   { name: 'offreTechnique', maxCount: 1 },
   { name: 'offreFinanciere', maxCount: 1 },
   { name: 'documentAdministratif', maxCount: 1 }
