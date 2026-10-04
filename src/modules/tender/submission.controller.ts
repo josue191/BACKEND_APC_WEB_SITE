@@ -24,9 +24,25 @@ export class SubmissionController {
         return ResponseUtil.badRequest(res, 'Champs requis manquants');
       }
 
-      // Validation des fichiers requis
-      if (!files?.['offreTechnique'] || !files?.['offreFinanciere']) {
-        return ResponseUtil.badRequest(res, 'Les fichiers technique et financier sont requis');
+      // Récupérer l'appel d'offres pour connaître le mode de soumission
+      const tender = await this.tenderRepository.findOneBy({ id: tenderId });
+      if (!tender) {
+        return ResponseUtil.notFound(res, 'Appel d\'offres introuvable');
+      }
+
+      // Validation des fichiers requis selon le mode de soumission
+      const isSingleMode = tender.submissionMode === 'single';
+
+      if (isSingleMode) {
+        // Mode single: seul offreTechnique est requis (contient le dossier complet)
+        if (!files?.['offreTechnique']) {
+          return ResponseUtil.badRequest(res, 'Le dossier complet est requis');
+        }
+      } else {
+        // Mode standard: offreTechnique et offreFinanciere sont requis
+        if (!files?.['offreTechnique'] || !files?.['offreFinanciere']) {
+          return ResponseUtil.badRequest(res, 'Les fichiers technique et financier sont requis');
+        }
       }
 
       // Générer les URLs pour les fichiers locaux
