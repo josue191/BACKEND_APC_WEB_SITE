@@ -41,6 +41,10 @@ export enum TenderStatus {
  *           type: string
  *         organization:
  *           type: string
+ *         submissionMode:
+ *           type: string
+ *           enum: [standard, single]
+ *           default: standard
  */
 @Entity('tenders')
 export class Tender {
@@ -89,6 +93,9 @@ export class Tender {
 
   @Column({ default: false })
   isFeatured!: boolean; // Mettre en avant sur la page d'accueil
+
+  @Column({ default: 'standard' })
+  submissionMode!: 'standard' | 'single'; // 'standard' = 3 docs, 'single' = 1 doc
 
   @CreateDateColumn()
   createdAt!: Date;

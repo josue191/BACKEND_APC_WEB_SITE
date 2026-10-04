@@ -53,6 +53,10 @@ export class CreateTenderDto {
   @IsBoolean()
   @IsOptional()
   isFeatured?: boolean;
+
+  @IsEnum(['standard', 'single'])
+  @IsOptional()
+  submissionMode?: 'standard' | 'single';
 }
 
 export class UpdateTenderDto extends CreateTenderDto {}
