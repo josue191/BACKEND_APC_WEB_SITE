@@ -15,7 +15,7 @@ export class TenderController {
         try {
             const page = parseInt(req.query.page) || 1;
             const limit = parseInt(req.query.limit) || 10;
-            const adminMode = ['ADMIN', 'ADMIN_RH'].includes(req.user?.role);
+            const adminMode = req.query.adminMode === 'true' || ['ADMIN', 'ADMIN_RH'].includes(req.user?.role);
             const result = await this.service.findAll({
                 page,
                 limit,
